@@ -1,21 +1,24 @@
-from flask import Flask
+from flask import Flask, url_for, request
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return 'index.<a href="/hello">hello</a>'
+    return 'index.<a href="%s">hello</a>' % url_for('hello')
 
 @app.route('/hello')
 def hello():
-    return 'Hello World!<a href="/user/name">user/name</a>'
+    return 'Hello World!<a href="%s">user</a>' % url_for('show_user', username='test')
 
 @app.route('/user/<username>')
 def show_user(username):
-    return 'Hello %s!<a href="/post/1">post/1</a>' % username
+    return 'Hello %s!<a href="%s">post</a>' % (username, url_for('show_post', post_id=1))
 
-@app.route('/post/<int:post_id>/')
+@app.route('/post/<int:post_id>/', methods=['GET', 'POST'])
 def show_post(post_id):
-    return 'Post %d' % post_id
+    if request.method == 'GET':
+        return 'GET Post %d' % post_id
+    else:
+        return 'POST Post %d' % post_id
 
 if __name__ == '__main__':
     app.debug = True
