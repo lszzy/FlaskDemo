@@ -1,4 +1,5 @@
 from flask import Flask, url_for, request
+from flask import render_template
 app = Flask(__name__)
 
 @app.route('/')
@@ -7,11 +8,11 @@ def index():
 
 @app.route('/hello')
 def hello():
-    return 'Hello World!<a href="%s">user</a>' % url_for('show_user', username='test')
+    return render_template('hello.html', name='test')
 
 @app.route('/user/<username>')
 def show_user(username):
-    return 'Hello %s!<a href="%s">post</a>' % (username, url_for('show_post', post_id=1))
+    return '<head><link rel="stylesheet" type="text/css" href="%s" /></head>Hello %s!<a href="%s">post</a>' % (url_for('static', filename="style.css"), username, url_for('show_post', post_id=1))
 
 @app.route('/post/<int:post_id>/', methods=['GET', 'POST'])
 def show_post(post_id):
